@@ -1,0 +1,9 @@
+version: "3" #docker compose 버전
+services:   #실행하려는 컨테이너들(아래 입력된)을 하나로 묶어 실행
+    redis-server: #컨테이너 이름1
+        image: "redis" #redis-server에서 사용하는 이미지
+    node-app: #컨테이너 이름2
+        build: . #현재 디렉토리에 있는 빌드할 Dockerfile 위치 지정(현재위치 .)
+        ports:
+            - "4000:6000" #포트매핑({로컬 포트} : {컨테이너 내부 포트})
+        
