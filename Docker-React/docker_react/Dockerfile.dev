@@ -1,0 +1,27 @@
+#Docker.dev와 같이 기본 Docker 파일이 아닐 경우 실행할 땐 아래와 같은 {}를 포함한 명령어를 활용
+#docker build {-f Dockerfile.dev} [-t 이미지 명] ./
+#docker 환경에선 node_modules를 삭제해줘도 됨(용량이 너무 크기 때문에 느려지는 원인)
+#docker run [-it] -p {연결할 포트}:{컨테이너 내부 포트} {이미지 명}
+#react에서 핫 리로드 동작 시 -e CHOKIDAR_USEPOLLING=true 옵션 추가 필요(이미지 명 앞에 추가)
+
+FROM node:alpine
+
+#EACCES: permission denied, mkdir '/usr/src/app/node_module/.cache'
+#error 해결(디렉터리 추가 및 권한 부여, build가 제대로 됐는지 확인하기)
+RUN cd /usr
+RUN mkdir /usr/app
+RUN chmod -R 777 /usr/app
+#
+
+WORKDIR /usr/app
+
+#COPY를 사용했을 경우 build를 다시해주지 않는 이상 변함이 없음
+COPY package.json ./
+
+RUN npm install
+
+COPY ./ ./
+
+CMD ["npm","run", "start"]
+
+#docker run -i -p {연결 포트} : {컨테이너 내부 포트} -v {NODE_MODULES 경로} -v $(pwd):/{app의 경로(여기선 usr/app)} {이미지 명}
