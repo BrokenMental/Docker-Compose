@@ -1,0 +1,30 @@
+version: "3"
+services: #하위에 컨테이너 추가
+  react:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment: #윈도우 환경에서 핫 리로드에 필요한 옵션
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - /usr/app/node_modules
+      - ./:/usr/app
+    stdin_open: true #리액트에서 필요한 옵션(나가기 에러 해결 방법)
+
+#실행 시 : docker-compose up
+#재 빌드 시 : docker-compose up --build
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment: #윈도우 환경에서 핫 리로드에 필요한 옵션
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - /usr/app/node_modules
+      - ./:/usr/app
+    command: ["npm", "run", "test"]
+
+#테스트 컨테이너 추가 후 docker-compose up --build
