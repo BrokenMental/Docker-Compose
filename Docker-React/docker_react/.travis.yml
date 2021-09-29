@@ -1,0 +1,16 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - echo "start"
+  - docker build -t brokenmental/Docker-Study/Docker-React -f  Dockerfile.dev .
+
+script:
+  - docker run -e CI=true brokenmental/Docker-Study/Docker-React npm run test -- --coverage
+
+after_success:
+  - echo "finish"
